@@ -24,6 +24,11 @@ jobs:
         run: zip -r wa-ai-chat.zip wa-ai-chat
 
       - name: Create release
-        run: gh release create "$GITHUB_REF_NAME" wa-ai-chat.zip --title "$GITHUB_REF_NAME" --generate-notes
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" wa-ai-chat.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" wa-ai-chat.zip --title "$GITHUB_REF_NAME" --generate-notes
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
